@@ -7,6 +7,7 @@
 
 #include<stdio.h>
 #include<string.h>
+#include<stdlib.h>
 
 #include "Memory.h"
 #include "Register.h"
@@ -79,5 +80,11 @@ create_sub( char * );
 
 struct instmem *
 create_bnez( char * );
+
+void
+push_inst( char * inst );
+
+void
+print_code_listing();
 
 #endif

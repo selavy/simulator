@@ -1,5 +1,5 @@
 CC=gcc
-CFLAGS=-Wall -pedantic -ansi -g -Wunused-variable
+CFLAGS=-pedantic -ansi -g
 
 OBJS = Register.o Memory.o SimIO.o Pipeline.o main.o
 

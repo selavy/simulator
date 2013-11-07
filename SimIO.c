@@ -60,12 +60,19 @@ struct instmem *
 read_code_section( char * line )
 {
   char cmd[MAX_STR_LEN];
+  char rs[MAX_STR_LEN];
+  char rt[MAX_STR_LEN];
+  char rd[MAX_STR_LEN];
+  int offset;
 
 #ifdef __DEBUG__
   printf("read_code_section(): %s", line );
 #endif
 
   /* TODO */
+  /* get rs, rt, rd, and offset for each command */
+  /* update instmem to hold rs, rt, rt, offset */
+
   if( 1 != sscanf( line, "%s\n", cmd) )
     {
       perror("malformed code");
@@ -75,6 +82,7 @@ read_code_section( char * line )
   if( strcmp( cmd, "LD" ) == 0 )
     {
       /* LD */
+      
       return create_ld( cmd );
     }
   else if( strcmp( cmd, "DADD" ) == 0 )
@@ -196,13 +204,15 @@ struct instmem *
 create_ld( char * cmd )
 {
   /* TODO */
-  
+  push_inst( cmd );
+  return NULL;  
 }
 
 struct instmem *
 create_sd( char * cmd )
 {
   /* TODO */
+  push_inst( cmd );
   return NULL;
 }
 
@@ -210,6 +220,7 @@ struct instmem *
 create_dadd( char * cmd )
 {
   /* TODO */
+  push_inst( cmd );
   return NULL;
 }
 
@@ -217,6 +228,7 @@ struct instmem *
 create_sub( char * cmd )
 {
   /* TODO */
+  push_inst( cmd );
   return NULL;
 }
 
@@ -224,6 +236,7 @@ struct instmem *
 create_bnez( char * cmd )
 {
   /* TODO */
+  push_inst( cmd );
   return NULL;
 }
 
@@ -233,8 +246,60 @@ push_inst( char * inst )
   int _id;
   size_t inst_sz;
   struct instmem * node;
+  struct instmem * prev;
 
   if( INSTS == NULL )
     {
+      INSTS = malloc( sizeof *INSTS );
+      if( INSTS == NULL )
+	return;
+
+      node = INSTS;
+      curr = INSTS;
+      prev = NULL;
     }
+  else
+    {
+      if( curr == NULL )
+	curr = INSTS; /* INSTS can't be NULL */
+
+      (*curr).next = malloc( sizeof( *(*curr).next ) );
+      if( (*curr).next == NULL )
+	return;
+
+      node = (*curr).next;
+      prev = curr;
+      curr = node;
+    }
+
+      inst_sz = strlen( inst ) + 1;
+      (*node).inst = malloc( sizeof( char ) * inst_sz );
+
+      if( (*node).inst == NULL )
+	{
+	  free( INSTS );
+	  INSTS = NULL;
+	  return;
+	}
+
+      strncpy( (*node).inst, inst, inst_sz );
+      (*node).inst_sz = inst_sz;
+      (*node).prev = prev;
+      (*node).next = NULL;
+}
+
+void
+print_code_listing()
+{
+#ifdef __DEBUG__
+  struct instmem * n;
+
+  n = INSTS;
+
+  while( n != NULL )
+    {
+      printf("%s\n", (*n).inst );
+      n = (*n).next;
+    }
+#endif
 }

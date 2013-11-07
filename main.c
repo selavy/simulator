@@ -37,6 +37,8 @@ int main( int argc, char ** argv )
   init_memfile();
   read_input( infile );
 
+  print_code_listing();
+
   do
     {
       WB();
